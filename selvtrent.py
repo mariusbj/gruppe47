@@ -10,7 +10,32 @@ import tqdm
 
 BATCH_SIZE = 4
 
-def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
+class_ids = [
+    "Aeroplane",
+    "Bicycle",
+    "Bird",
+    "Boat",
+    "Bottle",
+    "Bus",
+    "Car",
+    "Cat",
+    "Chair",
+    "Cow",
+    "Dining Table",
+    "Dog",
+    "Horse",
+    "Motorbike",
+    "Person",
+    "Potted Plant",
+    "Sheep",
+    "Sofa",
+    "Train",
+    "Tvmonitor",
+    "Total",
+]
+class_mapping = dict(zip(range(len(class_ids)), class_ids))
+
+def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format,path):
     inputs = next(iter(inputs.take(1)))
     images, bounding_boxes = inputs["images"], inputs["bounding_boxes"]
     visualization.plot_bounding_box_gallery(
@@ -23,6 +48,7 @@ def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
         font_scale=0.7,
         bounding_box_format=bounding_box_format,
         class_mapping=class_mapping,
+        path=path,
     )
 
 
@@ -55,3 +81,45 @@ train_ds = load_pascal_voc(
 eval_ds = load_pascal_voc(split="test", dataset="voc/2007", bounding_box_format="xywh")
 
 train_ds = train_ds.shuffle(BATCH_SIZE * 4)
+
+train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+eval_ds = eval_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+
+visualize_dataset(
+    train_ds, bounding_box_format="xywh", value_range=(0, 255), rows=2, cols=2,path="train.png",
+)
+
+visualize_dataset(
+    eval_ds,
+    bounding_box_format="xywh",
+    value_range=(0, 255),
+    rows=2,
+    cols=2,
+    path="eval.png",
+)
+
+augmenters = [
+    keras_cv.layers.RandomFlip(mode="horizontal", bounding_box_format="xywh"),
+    keras_cv.layers.JitteredResize(
+        target_size=(640, 640), scale_factor=(0.75, 1.3), bounding_box_format="xywh"
+    ),
+]
+
+
+def create_augmenter_fn(augmenters):
+    def augmenter_fn(inputs):
+        for augmenter in augmenters:
+            inputs = augmenter(inputs)
+        return inputs
+
+    return augmenter_fn
+
+
+augmenter_fn = create_augmenter_fn(augmenters)
+
+train_ds = train_ds.map(augmenter_fn, num_parallel_calls=tf_data.AUTOTUNE)
+visualize_dataset(
+    train_ds, bounding_box_format="xywh", value_range=(0, 255), rows=2, cols=2
+)
+
+
