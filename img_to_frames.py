@@ -1,6 +1,6 @@
 import cv2
 
-video = cv2.VideoCapture("testvid.mov")
+video = cv2.VideoCapture("ENML_ENLK_Part2_RRTC_RTM92_HUD_hud_1.mp4")
 
 frame_nr = 1
 

@@ -151,7 +151,7 @@ optimizer = keras.optimizers.SGD(
 
 
 coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(
-    eval_ds, bounding_box_format="xywh"
+    eval_ds.take(20), bounding_box_format="xywh"
 )
 
 model = keras_cv.models.YOLOV8Detector.from_preset(
@@ -191,7 +191,7 @@ def visualize_detections(model, dataset, bounding_box_format,path):
         scale=4,
         rows=2,
         cols=2,
-        show=True,
+        show=False,
         font_scale=0.7,
         class_mapping=class_mapping,
         path=path
