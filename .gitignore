@@ -1,3 +1,5 @@
 *.png
 frames/
+*.mp4
+*.csv
 animals-detection-images-dataset/
