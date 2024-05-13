@@ -1,5 +1,10 @@
 *.png
 frames/
+images/
+preds/
+retground/
+retpred/
+.venv/
 *.mp4
 *.csv
 animals-detection-images-dataset/
