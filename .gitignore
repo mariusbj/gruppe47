@@ -4,6 +4,14 @@ images/
 preds/
 retground/
 retpred/
+resized/
+testground/
+testpreds/
+annotadedgroundtruth/
+finetunedground/
+finetunedpreds/
+finetuned.keras
+
 .venv/
 *.mp4
 *.csv
