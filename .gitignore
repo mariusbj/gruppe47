@@ -11,6 +11,17 @@ annotadedgroundtruth/
 finetunedground/
 finetunedpreds/
 finetuned.keras
+groundenst/
+groundpart1/
+groundpart2/
+resizedenst/
+resizedpart1/
+resizedpart2/
+rettestpredenst/
+rettestpredspart2/
+testpredenst/
+testpredspart1/
+testpredspart2/
 
 .venv/
 *.mp4
